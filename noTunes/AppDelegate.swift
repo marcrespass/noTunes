@@ -10,85 +10,79 @@ import Cocoa
 import ServiceManagement
 
 @NSApplicationMain
-class AppDelegate: NSObject, NSApplicationDelegate {
-    
+class AppDelegate: NSObject {
+    let kiTunesName = "com.apple.iTunes"
+    let kMusicName = "com.apple.Music"
+
     @IBOutlet weak var statusMenu: NSMenu!
     
     let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     
-    @IBAction func quitClicked(_ sender: NSMenuItem) {
+    @IBAction func enableMusic(_ sender: NSMenuItem? = nil) {
+        guard let button = statusItem.button else { fatalError("Button is nil!") }
+        button.image = NSImage(named: "enabled")
+
+        sender?.menu?.items.forEach { $0.state = .off}
+        sender?.state = .on
+    }
+
+    @IBAction func disableMusic(_ sender: NSMenuItem? = nil) {
+        guard let button = statusItem.button else { fatalError("Button is nil!") }
+        button.image = NSImage(named: "blocked")
+
+        sender?.menu?.items.forEach { $0.state = .off}
+        sender?.state = .on
+
+        self.terminateMusicIfRunning()
+    }
+
+    @IBAction func quitClicked(_ sender: NSMenuItem? = nil) {
         NSApplication.shared.terminate(self)
     }
-    
-    @objc func statusBarButtonClicked(sender: NSStatusBarButton) {
-        let event = NSApp.currentEvent!
-        
-        if event.type == NSEvent.EventType.rightMouseUp {
-            statusItem.menu = statusMenu
-            statusItem.popUpMenu(statusMenu)
-            statusItem.menu = nil
-        } else {
-            if statusItem.image == NSImage(named: "StatusBarButtonImage") {
-                self.appIsLaunched()
-                statusItem.image = NSImage(named: "StatusBarButtonImageActive")
-            } else {
-                statusItem.image = NSImage(named: "StatusBarButtonImage")
-            }
-        }
-    }
-    
-    func applicationDidFinishLaunching(_ aNotification: Notification) {
-        statusItem.image = NSImage(named: "StatusBarButtonImageActive")
-        
-        if let button = statusItem.button {
-            button.action = #selector(self.statusBarButtonClicked(sender:))
-            button.sendAction(on: [.leftMouseUp, .rightMouseUp])
-        }
-        
-        self.appIsLaunched()
-        self.createListener()
-    }
-    
+
     func createListener() {
         let workspaceNotificationCenter = NSWorkspace.shared.notificationCenter
-        workspaceNotificationCenter.addObserver(self, selector: #selector(self.appWillLaunch(note:)), name: NSWorkspace.willLaunchApplicationNotification, object: nil)
+        workspaceNotificationCenter.addObserver(self, selector: #selector(self.musicWillLaunchNotification(note:)), name: NSWorkspace.willLaunchApplicationNotification, object: nil)
     }
     
-    func appIsLaunched() {
+    func terminateMusicIfRunning() {
         let apps = NSWorkspace.shared.runningApplications
         for currentApp in apps.enumerated() {
             let runningApp = apps[currentApp.offset]
             
-            if(runningApp.activationPolicy == .regular) {
-                if(runningApp.bundleIdentifier == "com.apple.iTunes") {
-                    self.terminateProcessWith(Int(runningApp.processIdentifier), runningApp.localizedName!)
-                }
-                if(runningApp.bundleIdentifier == "com.apple.Music") {
-                    self.terminateProcessWith(Int(runningApp.processIdentifier), runningApp.localizedName!)
+            if runningApp.activationPolicy == .regular {
+                if let name = runningApp.localizedName, (runningApp.bundleIdentifier == kiTunesName || runningApp.bundleIdentifier == kMusicName) {
+                    self.terminateProcessWith(Int(runningApp.processIdentifier), name)
                 }
             }
         }
     }
     
-    @objc func appWillLaunch(note:Notification) {
-        if statusItem.image == NSImage(named: "StatusBarButtonImageActive") {
-            if let processName:String = note.userInfo?["NSApplicationBundleIdentifier"] as? String {
-                if let processId = note.userInfo?["NSApplicationProcessIdentifier"] as? Int {
-                    switch processName {
-                        case "com.apple.iTunes":
-                            self.terminateProcessWith(processId, processName)
-                        case "com.apple.Music":
-                            self.terminateProcessWith(processId, processName)
-                        default:break
-                    }
-                }
+    @objc func musicWillLaunchNotification(note:Notification) {
+        // This could be better. This checks the image of the button but we could have a state
+        if let button = statusItem.button, button.image == NSImage(named: "blocked"),
+           let bundleIdentifier = note.userInfo?["NSApplicationBundleIdentifier"] as? String,
+           let processId = note.userInfo?["NSApplicationProcessIdentifier"] as? Int {
+            switch bundleIdentifier {
+                case kiTunesName:
+                    self.terminateProcessWith(processId, bundleIdentifier)
+                case kMusicName:
+                    self.terminateProcessWith(processId, bundleIdentifier)
+                default:break
             }
         }
     }
-    
+
     func terminateProcessWith(_ processId:Int,_ processName:String) {
         let process = NSRunningApplication.init(processIdentifier: pid_t(processId))
         process?.forceTerminate()
     }
-    
+}
+
+extension AppDelegate: NSApplicationDelegate {
+    func applicationDidFinishLaunching(_ aNotification: Notification) {
+        self.statusItem.menu = self.statusMenu
+        self.disableMusic(self.statusMenu.items.first)
+        self.createListener()
+    }
 }
