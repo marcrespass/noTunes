@@ -25,6 +25,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D35D167226A9ED4C0083C98E /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		D35D167326A9ED4C0083C98E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		E29B3C6F1E1D97CF00CB67E3 /* noTunes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = noTunes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E29B3C721E1D97CF00CB67E3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E29B3C741E1D97CF00CB67E3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -46,6 +48,8 @@
 		E29B3C661E1D97CF00CB67E3 = {
 			isa = PBXGroup;
 			children = (
+				D35D167226A9ED4C0083C98E /* LICENSE */,
+				D35D167326A9ED4C0083C98E /* README.md */,
 				E29B3C711E1D97CF00CB67E3 /* noTunes */,
 				E29B3C701E1D97CF00CB67E3 /* Products */,
 			);
