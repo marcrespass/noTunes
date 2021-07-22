@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="18122" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="18122"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -20,6 +19,19 @@
         <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
         <menu id="WAR-Dm-F96">
             <items>
+                <menuItem title="Disable Music" id="K1E-60-GUB">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="disableMusic:" target="Voe-Tx-rLC" id="2xs-87-NXj"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Enable Music" id="asa-Pe-Ykw">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="enableMusic:" target="Voe-Tx-rLC" id="kdE-YV-pos"/>
+                    </connections>
+                </menuItem>
+                <menuItem isSeparatorItem="YES" id="7IG-NY-eGF"/>
                 <menuItem title="Quit" id="tKr-kb-ZPz">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
@@ -27,6 +39,7 @@
                     </connections>
                 </menuItem>
             </items>
+            <point key="canvasLocation" x="141" y="152"/>
         </menu>
         <userDefaultsController representsSharedInstance="YES" id="4fn-wC-gIW"/>
     </objects>
